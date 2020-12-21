@@ -1,11 +1,8 @@
-// import { SafeInfo, Transaction } from "@gnosis.pm/safe-apps-sdk";
 import React from "react";
 import styled from "styled-components";
 import { Button, Loader, Title } from "@gnosis.pm/safe-react-components";
 import { useSafe } from "@rmeissner/safe-apps-react-sdk";
 import { WraptorComponent, useWraptor } from "@w3stside/wraptor";
-
-// import useInterval from "./useInterval";
 
 import { useActiveWeb3, useBlockNumber } from './hooks';
 
