@@ -20,16 +20,32 @@ const Container = styled.form`
 `;
 
 const WETH_ADDRESS = {
-  mainnet: "",
+  mainnet: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
   rinkeby: "0xc778417e063141139fce010982780140aa0cd5ab",
 };
 
 const App: React.FC = () => {
   const safe = useSafe();
   const intervalChange = useInterval();
-  const [submitting, setSubmitting] = useState(false);
+  // const [submitting, setSubmitting] = useState(false);
+  const provider = initWeb3(safe.info.network);
+  const wraptorApi = useWraptor(
+    {
+      provider,
+      contractAddress: WETH_ADDRESS[safe.info.network],
+      userAddress: safe.info.safeAddress,
+      catalyst: 0,
+    },
+    "ETH"
+  );
 
-  const web3 = initWeb3(safe.info.network);
+  const {
+    userBalanceWei,
+    getBalance,
+    userAllowanceWei,
+    getAllowance,
+    approve,
+  } = wraptorApi;
 
   // const submitTx = useCallback(async () => {
   //   setSubmitting(true);
@@ -49,7 +65,7 @@ const App: React.FC = () => {
       <WraptorComponent
         type="ETH"
         contractAddress={WETH_ADDRESS[safe.info.network]}
-        provider={web3}
+        provider={provider}
         userAddress={safe.info.safeAddress}
         catalyst={intervalChange}
         customStyle={{
