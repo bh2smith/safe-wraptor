@@ -1,11 +1,10 @@
-import { SafeInfo, Transaction } from "@gnosis.pm/safe-apps-sdk";
+// import { SafeInfo, Transaction } from "@gnosis.pm/safe-apps-sdk";
+// eslint-disable-next-line no-unused-vars
 import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import { Button, Loader, Title } from "@gnosis.pm/safe-react-components";
 import { useSafe } from "@rmeissner/safe-apps-react-sdk";
 import { WraptorComponent, useWraptor } from "@w3stside/wraptor";
-
-import useInterval from "./useInterval";
 
 import { initWeb3 } from "./connect";
 
@@ -26,8 +25,7 @@ const WETH_ADDRESS = {
 
 const App: React.FC = () => {
   const safe = useSafe();
-  const intervalChange = useInterval();
-  // const [submitting, setSubmitting] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const provider = initWeb3(safe.info.network);
   const wraptorApi = useWraptor(
     {
@@ -40,24 +38,26 @@ const App: React.FC = () => {
   );
 
   const {
-    userBalanceWei,
-    getBalance,
-    userAllowanceWei,
-    getAllowance,
+    // userBalanceWei,
+    // getBalance,
+    // userAllowanceWei,
+    // getAllowance,
     approve,
   } = wraptorApi;
+  console.log(approve);
 
-  // const submitTx = useCallback(async () => {
-  //   setSubmitting(true);
+  const submitTx = useCallback(async () => {
+    setSubmitting(true);
 
-  //   try {
-  //     const safeTxHash = await safe.sendTransactions([]);
-  //     // const safeTx = await safe.loadSafeTransaction(safeTxHash);
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  //   setSubmitting(false);
-  // }, [safe]);
+    try {
+      const safeTxHash = await safe.sendTransactions([]);
+      const safeTx = await safe.loadSafeTransaction(safeTxHash);
+      console.log(safeTx);
+    } catch (e) {
+      console.error(e);
+    }
+    setSubmitting(false);
+  }, [safe]);
 
   return (
     <Container>
@@ -67,13 +67,12 @@ const App: React.FC = () => {
         contractAddress={WETH_ADDRESS[safe.info.network]}
         provider={provider}
         userAddress={safe.info.safeAddress}
-        catalyst={intervalChange}
         customStyle={{
           width: "50%",
           background: "#fff",
         }}
       />
-      {/* {submitting ? (
+      {submitting ? (
         <>
           <Loader size="md" />
           <br />
@@ -91,7 +90,7 @@ const App: React.FC = () => {
         <Button size="lg" color="primary" onClick={submitTx}>
           Submit
         </Button>
-      )} */}
+      )}
     </Container>
   );
 };
