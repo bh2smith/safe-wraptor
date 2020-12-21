@@ -44,7 +44,10 @@ const useWindowLoad = () => {
   
     useEffect((): void | (() => void) => {
       function handler(e, r) {
-        if (e) throw new Error(e)
+        if (e) {
+            console.error('[NEW BLOCK HEADERS::HANDLER ERROR]', e)
+            return
+        }
   
         setBlockNumber(r.number)
       }
