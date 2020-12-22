@@ -1,3 +1,10 @@
 build
+coverage
+dist
 node_modules
+stats.json
+.history
+.DS_Store
+.vscode
+*.log
 .env
