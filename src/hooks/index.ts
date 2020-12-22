@@ -6,15 +6,18 @@ const useWindowLoad = () => {
     const [windowLoaded, setWindowLoaded] = useState(false)
   
     useEffect((): void | (() => void) => {
-      if (!window || typeof window.addEventListener !== 'function') return
-      
       function listener() {
         return setWindowLoaded(true)
       }
-  
-      window.addEventListener('load', listener)
-    
-      return () => window.removeEventListener('load', listener)
+      
+      if(!window || typeof window.addEventListener !== 'function' || document?.readyState !== 'loading') {
+        console.log( '[useWindowLoaded] DOCUMENT READY' );
+        listener();
+      } else {
+          document.addEventListener('DOMContentLoaded', listener);
+      }
+
+      return () => window?.removeEventListener('load', listener)
     }, [])
   
     return windowLoaded
@@ -40,7 +43,7 @@ const useWindowLoad = () => {
   }
   
   export const useBlockNumber = ({ network }: BlockchainParams) => {
-    const [blockNumber, setBlockNumber] = useState(0)
+    const [blockNumber, setBlockNumber] = useState(null)
     const web3 = useActiveWeb3({ network })
   
     useEffect((): void | (() => void) => {
@@ -57,8 +60,15 @@ const useWindowLoad = () => {
   
       const sub = web3.eth.subscribe('newBlockHeaders', handler)
   
+      // Fire on load
+      if (!blockNumber && web3) {
+        web3.eth.getBlockNumber()
+          .then(res => setBlockNumber(res))
+          .catch(console.error)
+      }
+
       return () => sub.unsubscribe()
-    }, [web3])
+    }, [blockNumber, web3])
   
     return blockNumber
   }
