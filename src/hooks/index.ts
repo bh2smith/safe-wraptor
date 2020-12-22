@@ -25,7 +25,7 @@ const useWindowLoad = () => {
   }
   
   export const useActiveWeb3 = ({ network }: BlockchainParams) => {
-    const [web3, setWeb3] = useState<Web3>(null)
+    const [web3, setWeb3] = useState<Web3 | null>(null)
     const windowLoaded = useWindowLoad()
   
     useEffect(() => {
@@ -35,6 +35,7 @@ const useWindowLoad = () => {
   
       setWeb3(web3)
     }, [network, windowLoaded])
+    
     return web3
   }
   

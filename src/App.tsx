@@ -68,17 +68,21 @@ const App: React.FC = () => {
     <Container>
       <Title size="md">Safe Wraptor</Title>
       <Title size="xs">{ethBalance}</Title>
-      <WraptorComponent
-        type="ETH"
-        contractAddress={WETH_ADDRESS[safe.info.network]}
-        provider={provider}
-        userAddress={safe.info.safeAddress}
-        catalyst={blockNumber}
-        customStyle={{
-          width: "50%",
-          background: "#fff",
-        }}
-      />
+      {provider 
+        ? 
+        <WraptorComponent
+          type="ETH"
+          contractAddress={WETH_ADDRESS[safe.info.network]}
+          provider={provider}
+          userAddress={safe.info.safeAddress}
+          catalyst={blockNumber}
+          customStyle={{
+            width: "50%",
+            background: "#fff",
+          }}
+        /> 
+        : 
+      <Loader size="md" />}
       {submitting ? (
         <>
           <Loader size="md" />
