@@ -1,12 +1,10 @@
-// import { SafeInfo, Transaction } from "@gnosis.pm/safe-apps-sdk";
-// eslint-disable-next-line no-unused-vars
-import React, { useCallback, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Button, Loader, Title } from "@gnosis.pm/safe-react-components";
 import { useSafe } from "@rmeissner/safe-apps-react-sdk";
 import { WraptorComponent, useWraptor } from "@w3stside/wraptor";
 
-import { initWeb3 } from "./connect";
+import { useActiveWeb3, useBlockNumber } from './hooks';
 
 const Container = styled.form`
   margin-bottom: 2rem;
@@ -25,28 +23,35 @@ const WETH_ADDRESS = {
 
 const App: React.FC = () => {
   const safe = useSafe();
-  const [submitting, setSubmitting] = useState(false);
-  const provider = initWeb3(safe.info.network);
+  const [submitting, setSubmitting] = React.useState(false);
+  const provider = useActiveWeb3({ network: safe.info.network })
+  const blockNumber = useBlockNumber({ network: safe.info.network })
+  
+  // const [submitting, setSubmitting] = useState(false);
+  
   const wraptorApi = useWraptor(
     {
       provider,
       contractAddress: WETH_ADDRESS[safe.info.network],
       userAddress: safe.info.safeAddress,
-      catalyst: 0,
+      catalyst: blockNumber,
     },
     "ETH"
   );
+  
+  console.debug('[WRAPTOR API]', wraptorApi)
 
-  const {
-    // userBalanceWei,
-    // getBalance,
-    // userAllowanceWei,
-    // getAllowance,
-    approve,
-  } = wraptorApi;
-  console.log(approve);
+  const ethBalance = React.useMemo(() => `Available ETH: ${safe.info.ethBalance}`, [safe.info.ethBalance])
 
-  const submitTx = useCallback(async () => {
+  // const {
+  //   userBalanceWei,
+  //   getBalance,
+  //   userAllowanceWei,
+  //   getAllowance,
+  //   approve,
+  // } = wraptorApi;
+
+  const submitTx = React.useCallback(async () => {
     setSubmitting(true);
 
     try {
@@ -62,11 +67,13 @@ const App: React.FC = () => {
   return (
     <Container>
       <Title size="md">Safe Wraptor</Title>
+      <Title size="xs">{ethBalance}</Title>
       <WraptorComponent
         type="ETH"
         contractAddress={WETH_ADDRESS[safe.info.network]}
         provider={provider}
         userAddress={safe.info.safeAddress}
+        catalyst={blockNumber}
         customStyle={{
           width: "50%",
           background: "#fff",
