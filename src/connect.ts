@@ -11,8 +11,7 @@ const NetworkMap = {
 
 type NetworkName = keyof typeof NetworkMap;
 
-// TODO - access infura key without publish (yarn add dotenv)
-const INFURA_API_KEY = process.env.INFURA_API_KEY;
+const INFURA_API_KEY = process.env.REACT_APP_INFURA_ID;
 
 const SAFE_ENDPOINT_URLS = {
   [NetworkMap.rinkeby]: `https://safe-transaction.rinkeby.gnosis.io`,
